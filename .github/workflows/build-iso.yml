@@ -1,1 +1,25 @@
 
+name: Gerar ISO LeveOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gerar ISO
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y debian-archive-keyring
+          chmod +x build-leveos.sh
+          ./build-leveos.sh
+          cp "$HOME"/leveos-build/*.iso "$GITHUB_WORKSPACE"/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: leveos-iso
+          path: "*.iso"
